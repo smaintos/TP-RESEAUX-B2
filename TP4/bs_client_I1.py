@@ -25,7 +25,4 @@ s.close()
 # Affichage de la réponse reçue du serveur
 print(f"Meooooooo")
 
-#Methode exit cousin
-def exit():
-    sys.exit()
-
+sys.exit(0)
