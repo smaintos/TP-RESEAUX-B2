@@ -32,7 +32,7 @@ while True:
         print(f"Données reçues du client : {data}")
 
         # On répond au client un truc
-        conn.sendall("Salut mec.")
+        conn.sendall(b'Salut mec.')
 
     except socket.error:
         print("Error Occured.")
