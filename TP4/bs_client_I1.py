@@ -9,8 +9,8 @@ port = 13337              # Port choisir par le serveur
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Connexion au serveur
-#s.connect((host, port))
-s.bind((host, port))
+s.connect((host, port))
+
 # note : la double parenthèse n'est pas une erreur : on envoie un tuple à la fonction connect()
 
 # Envoi de data bidon
