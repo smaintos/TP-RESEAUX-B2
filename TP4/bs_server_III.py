@@ -82,21 +82,24 @@ def run_server(host, port):
     logging.info("Arrêt du serveur.")
 
 def check_no_clients():
-    while True:
+    while not stop_server:
         time.sleep(60)
-        if not clients_connected:
-            logging.warning("Aucun client depuis plus d'une minute.")
+        logging.warning("Aucun client connecté depuis plus d'une minute.")
+
+def signal_handler(sig, frame):
+    global stop_server, conn
+    logging.info("Arrêt du serveur.")
+    stop_server = True
+    if conn:
+        conn.close()
+    sys.exit(0)
 
 if __name__ == "__main__":
-    host, port = parse_arguments()
-
-    threading.Thread(target=check_no_clients).start()
-
-    def signal_handler(sig, frame):
-        logging.info("Arrêt du serveur.")
-        sys.exit(0)
-
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
-    run_server(host, port)
+    server_thread = threading.Thread(target=run_server)
+    server_thread.start()
+
+    check_no_clients_thread = threading.Thread(target=check_no_clients)
+    check_no_clients_thread.start()
