@@ -23,7 +23,7 @@ def handle_port_argument(port):
 def main():
     parser = argparse.ArgumentParser(description="Serveur bidon avec quelques réponses spéciales.")
     parser.add_argument("-p", "--port", type=int, help="Spécifie le port sur lequel le serveur va écouter.")
-    parser.add_argument("-H", "--help", action="store_true", help="Affiche l'aide.")
+    parser.add_argument("-hh", "--help", action="store_true", help="Affiche l'aide.")  # Modifier le raccourci -h en -hh
 
     args = parser.parse_args()
 
