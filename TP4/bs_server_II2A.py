@@ -47,6 +47,7 @@ def parse_arguments():
     return host, port
 
 def run_server():
+    global conn
     host, port = parse_arguments()
 
     # On crée un objet socket
@@ -98,6 +99,7 @@ def run_server():
     threading.Thread(target=check_no_clients).start()
 
     def signal_handler(sig, frame):
+        global conn
         logging.info("Arrêt du serveur.")
         conn.close()
         sys.exit(0)
