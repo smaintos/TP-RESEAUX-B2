@@ -20,6 +20,9 @@ log_handler.setLevel(logging.INFO)
 log_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)s'))
 logging.getLogger('').addHandler(log_handler)
 
+conn = None  # Variable globale pour stocker la connexion
+stop_server = False  # Variable globale pour indiquer l'arrêt du serveur
+
 def parse_arguments():
     host = ''
     port = 13337
@@ -47,27 +50,20 @@ def parse_arguments():
     return host, port
 
 def run_server():
-    global conn
+    global conn, stop_server
     host, port = parse_arguments()
 
-    # On crée un objet socket
-    # SOCK_STREAM c'est pour créer un socket TCP (pas UDP donc)
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    # On demande à notre programme de se bind sur notre port
-    s.bind((host, port))  
-
-    # Place le programme en mode écoute derrière le port auquel il s'est bind
+    s.bind((host, port))
     s.listen(1)
 
     logging.info("Le serveur est lancé.")
 
-    # Petite boucle infinie (bah oui c'est un serveur)
-    # À chaque itération la boucle reçoit des données et les traite
-    while True:
+    while not stop_server:
         try:
             conn, addr = s.accept()
             logging.info(f"Un client {addr[0]} s'est connecté.")
-            while True:
+            while not stop_server:
                 data = conn.recv(1024)
                 if not data:
                     break
@@ -91,21 +87,28 @@ def run_server():
             logging.error("Erreur lors de la connexion.")
             break
 
-    def check_no_clients():
-        while True:
-            time.sleep(60)
-            logging.warning("Aucun client connecté depuis plus d'une minute.")
+    conn.close()
+    logging.info("Arrêt du serveur.")
 
-    threading.Thread(target=check_no_clients).start()
+def check_no_clients():
+    while not stop_server:
+        time.sleep(60)
+        logging.warning("Aucun client connecté depuis plus d'une minute.")
 
-    def signal_handler(sig, frame):
-        global conn
-        logging.info("Arrêt du serveur.")
-        conn.close()
-        sys.exit(0)
+def signal_handler(sig, frame):
+    global stop_server
+    logging.info("Arrêt du serveur.")
+    stop_server = True
 
+if __name__ == "__main__":
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
-if __name__ == "__main__":
-    run_server()
+    server_thread = threading.Thread(target=run_server)
+    server_thread.start()
+
+    check_no_clients_thread = threading.Thread(target=check_no_clients)
+    check_no_clients_thread.start()
+
+    server_thread.join()
+    check_no_clients_thread.join()
