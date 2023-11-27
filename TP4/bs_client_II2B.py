@@ -5,7 +5,7 @@ import logging
 import os
 
 def parse_arguments():
-    host = '10.37.128.5'  # IP du serveur par défaut
+    host = '172.16.40.8'  # IP du serveur par défaut
     port = 13337           # Port choisi par le serveur par défaut
 
     if len(sys.argv) > 1:
