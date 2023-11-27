@@ -49,46 +49,36 @@ def parse_arguments():
 
     return host, port
 
-def run_server():
-    global conn, stop_server
-    host, port = parse_arguments()
+while not stop_server:
+    try:
+        conn, addr = s.accept()
+        logging.info(f"Un client {addr[0]} s'est connecté.")
+        while not stop_server:
+            data = conn.recv(1024)
+            if not data:
+                break
 
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((host, port))
-    s.listen(1)
+            logging.info(f"Message reçu d'un client {addr[0]} : {data.decode('utf-8')}")
 
-    logging.info("Le serveur est lancé.")
+            if b'meo' in data:
+                response = b'Meo a toi confrere.'
+                conn.send(response)
+                logging.info(f"Réponse envoyée au client {addr[0]} : {response.decode('utf-8')}")
+            elif b'waf' in data:
+                response = b'Ptdr t ki ?'
+                conn.send(response)
+                logging.info(f"Réponse envoyée au client {addr[0]} : {response.decode('utf-8')}")
+            else:
+                response = b'Mes respects humble humain.'
+                conn.send(response)
+                logging.info(f"Réponse envoyée au client {addr[0]} : {response.decode('utf-8')}")
 
-    while not stop_server:
-        try:
-            conn, addr = s.accept()
-            logging.info(f"Un client {addr[0]} s'est connecté.")
-            while not stop_server:
-                data = conn.recv(1024)
-                if not data:
-                    break
+    except KeyboardInterrupt:
+        break  # Sortir de la boucle en cas d'interruption
 
-                logging.info(f"Message reçu d'un client {addr[0]} : {data.decode('utf-8')}")
+conn.close()
+logging.info("Arrêt du serveur.")
 
-                if b'meo' in data:
-                    response = b'Meo a toi confrere.'
-                    conn.send(response)
-                    logging.info(f"Réponse envoyée au client {addr[0]} : {response.decode('utf-8')}")
-                elif b'waf' in data:
-                    response = b'Ptdr t ki ?'
-                    conn.send(response)
-                    logging.info(f"Réponse envoyée au client {addr[0]} : {response.decode('utf-8')}")
-                else:
-                    response = b'Mes respects humble humain.'
-                    conn.send(response)
-                    logging.info(f"Réponse envoyée au client {addr[0]} : {response.decode('utf-8')}")
-
-        except socket.error:
-            logging.error("Erreur lors de la connexion.")
-            break
-
-    conn.close()
-    logging.info("Arrêt du serveur.")
 
 def check_no_clients():
     while not stop_server:
