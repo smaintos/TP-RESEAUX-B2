@@ -1,4 +1,5 @@
 import socket
+import socket
 import sys
 import signal
 import threading
@@ -8,6 +9,8 @@ from logging.handlers import TimedRotatingFileHandler
 import os
 
 clients_connected = False  # Variable globale pour suivre les clients connectés
+stop_server = False  # Variable globale pour indiquer l'arrêt du serveur
+conn = None  # Variable globale pour stocker la connexion
 
 def parse_arguments():
     host = ''
@@ -44,7 +47,7 @@ log_handler.setFormatter(logging.Formatter('%(asctime)s %(levelname)s %(message)
 logging.getLogger('').addHandler(log_handler)
 
 def run_server(host, port):
-    global clients_connected  # Utilisation de la variable globale
+    global clients_connected, stop_server, conn  # Utilisation de variables globales
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((host, port))
@@ -53,11 +56,11 @@ def run_server(host, port):
     logging.info("Le serveur est lancé.")
     clients_connected = True  # Mise à jour de la variable globale
 
-    while True:
+    while not stop_server:
         try:
             conn, addr = s.accept()
             logging.info(f"Un client <{addr[0]}> s'est connecté.")
-            while True:
+            while not stop_server:
                 data = conn.recv(1024)
                 if not data:
                     break
@@ -78,7 +81,8 @@ def run_server(host, port):
             clients_connected = False  # Mise à jour de la variable globale
             break
 
-    conn.close()
+    if conn:
+        conn.close()
     logging.info("Arrêt du serveur.")
 
 def check_no_clients():
