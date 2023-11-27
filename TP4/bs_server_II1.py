@@ -7,7 +7,7 @@ conn = None  # Définir la variable conn en dehors du bloc try
 
 def print_help():
     print("Usage: python3 bs_server_II1.py [OPTION] [ARGUMENT]\n\n"
-          "\t-H, --help \t\t Affiche l'aide\n"
+          "\t-a, --help \t\t Affiche l'aide\n"
           "\t-p, --port \t\t Spécifie le port sur lequel le serveur va écouter\n\n")
     sys.exit(0)
 
@@ -27,7 +27,7 @@ def main():
 
     parser = argparse.ArgumentParser(description="Serveur bidon avec quelques réponses spéciales.")
     parser.add_argument("-p", "--port", type=int, help="Spécifie le port sur lequel le serveur va écouter.")
-    parser.add_argument("-H", "--help", action="store_true", help="Affiche l'aide.")  # Modifier le raccourci -h en -H
+    parser.add_argument("-a", "--help", action="store_true", help="Affiche l'aide.")  # Modifier le raccourci -h en -a
 
     args = parser.parse_args()
 
