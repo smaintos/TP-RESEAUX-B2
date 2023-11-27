@@ -2,13 +2,13 @@ import socket
 import sys
 import signal
 
-def print_help():
+def helplepauvre():
     print("Usage: python3 bs_server_II1.py [OPTION] [ARGUMENT]\n\n"
           "\t-h, --help    Affiche l'aide\n"
           "\t-p, --port    Spécifie le port sur lequel le serveur va écouter\n\n")
     sys.exit(0)
 
-def handle_port_argument(port):
+def portarg(port):
     if 0 <= port <= 65535:
         if 0 <= port <= 1024:
             print("ERROR Le port spécifié est un port privilégié. Spécifiez un port au-dessus de 1024.")
@@ -21,10 +21,10 @@ def handle_port_argument(port):
 
 if len(sys.argv) > 1:
     if sys.argv[1] == '-h' or sys.argv[1] == '--help':
-        print_help()
+        helplepauvre()
     elif sys.argv[1] == '-p' or sys.argv[1] == '--port':
         if len(sys.argv) > 2:
-            port = handle_port_argument(int(sys.argv[2]))
+            port = portarg(int(sys.argv[2]))
         else:
             print("ERROR L'option -p/--port nécessite un argument.")
             sys.exit(1)
