@@ -11,6 +11,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 # Connexion au serveur
 s.connect((host, port))
+
 # note : la double parenthèse n'est pas une erreur : on envoie un tuple à la fonction connect()
 
 print(f'Connecté avec succès au serveur {host} sur le port {port}')

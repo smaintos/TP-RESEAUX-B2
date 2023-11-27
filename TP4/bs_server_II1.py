@@ -2,13 +2,16 @@ import socket
 import sys
 import signal
 
-def helplepauvre():
+def help():
     print("Usage: python3 bs_server_II1.py [OPTION] [ARGUMENT]\n\n"
           "\t-h, --help    Affiche l'aide\n"
           "\t-p, --port    Spécifie le port sur lequel le serveur va écouter\n\n")
     sys.exit(0)
 
-def portarg(port):
+# On choisit une IP et un port où on va écouter
+host = ''  # string vide signifie, dans ce contexte, toutes les IPs de la machine
+
+def parse_arguments(port):
     if 0 <= port <= 65535:
         if 0 <= port <= 1024:
             print("ERROR Le port spécifié est un port privilégié. Spécifiez un port au-dessus de 1024.")
@@ -21,10 +24,10 @@ def portarg(port):
 
 if len(sys.argv) > 1:
     if sys.argv[1] == '-h' or sys.argv[1] == '--help':
-        helplepauvre()
+        help()
     elif sys.argv[1] == '-p' or sys.argv[1] == '--port':
         if len(sys.argv) > 2:
-            port = portarg(int(sys.argv[2]))
+            port = parse_arguments(int(sys.argv[2]))
         else:
             print("ERROR L'option -p/--port nécessite un argument.")
             sys.exit(1)
@@ -34,8 +37,7 @@ if len(sys.argv) > 1:
 else:
     port = 13337  # port choisi arbitrairement
 
-# On choisit une IP et un port où on va écouter
-host = ''  # string vide signifie, dans ce contexte, toutes les IPs de la machine
+
 
 # On crée un objet socket
 # SOCK_STREAM c'est pour créer un socket TCP (pas UDP donc)
