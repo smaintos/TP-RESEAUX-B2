@@ -20,17 +20,16 @@ def parse_arguments():
             print("Usage : python3 bs_server_II1.py [OPTION] [ARGUMENT]\n\n\t-h, --help \t\t Affiche l'aide\n\t-p, --port \t\t Spécifie le port sur lequel le serveur va écouter\n\n")
             sys.exit(0)
         elif sys.argv[1] == '-p' or sys.argv[1] == '--port':
-            port = validate_port_argument(sys.argv[2])
+            port = int(sys.argv[2])
+            validate_port_argument(port)
 
     return host, port
 
-def validate_port_argument(port_argument):
-    port = int(port_argument)
+def validate_port_argument(port):
     if not 0 <= port <= 65535:
         raise ValueError("ERROR Le port spécifié n'est pas un port possible (de 0 à 65535).")
     if 0 <= port <= 1024:
         raise ValueError("ERROR Le port spécifié est un port privilégié. Spécifiez un port au-dessus de 1024.")
-    return port
 
 # Configuration du logging
 log_folder = '/var/log/bs_server'
