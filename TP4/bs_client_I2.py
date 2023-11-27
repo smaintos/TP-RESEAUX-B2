@@ -17,7 +17,7 @@ while True:
         print(f'Connecté avec succès au serveur {host} sur le port {port}')
 
         # Envoi de data bidon
-        input_data = input("Que veux-tu envoyer au serveur ('exit' pour quitter) : ")
+        input_data = input("Que veux-tu envoyer au serveur ('exit' pour quitter) : ") 
 
         if input_data.lower() == 'exit':
             break  # Quitter la boucle si l'utilisateur entre 'exit'
