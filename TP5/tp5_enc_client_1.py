@@ -1,5 +1,23 @@
 import socket
+import struct
 
+def send_expression(sock, expression):
+    # Encode l'expression en UTF-8
+    encoded_expression = expression.encode('utf-8')
+
+    # Calcule la taille de l'expression en octets
+    expression_len = len(encoded_expression)
+
+    # Crée l'en-tête avec la taille de l'expression
+    header = struct.pack("!I", expression_len)
+
+    # Envoie l'en-tête et l'expression
+    sock.send(header + encoded_expression)
+
+    # Envoie une séquence de fin (0)
+    sock.send(b'\x00')
+
+# Connexion au serveur
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('172.16.40.8', 13337))
 s.send('Hello'.encode())
@@ -7,28 +25,15 @@ s.send('Hello'.encode())
 # On reçoit la string Hello
 data = s.recv(1024)
 
-# Récupération d'une string utilisateur
-msg = input("Calcul à envoyer: ")
+# Récupération de l'expression arithmétique de l'utilisateur
+expression = input("Expression arithmétique à envoyer: ")
 
-# on encode le message explicitement en UTF-8 pour récup un tableau de bytes
-encoded_msg = msg.encode('utf-8')
-
-# on calcule sa taille, en nombre d'octets
-msg_len = len(encoded_msg)
-
-# on encode ce nombre d'octets sur une taille fixe de 4 octets
-header = msg_len.to_bytes(4, byteorder='big')
-
-# on peut concaténer ce header avec le message, avant d'envoyer sur le réseau
-payload = header + encoded_msg
-
-
-# on peut envoyer ça sur le réseau
-s.send(payload)
-s.close()
-
+# Envoie l'expression au serveur
+send_expression(s, expression)
 
 # Réception et affichage du résultat
 s_data = s.recv(1024)
 print(s_data.decode())
+
+# Fermeture de la connexion
 s.close()
