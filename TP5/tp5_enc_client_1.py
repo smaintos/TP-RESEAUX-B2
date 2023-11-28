@@ -9,6 +9,7 @@ data = s.recv(1024)
 
 # Récupération d'une string utilisateur
 msg = input("Calcul à envoyer: ")
+msgtoint = int(msg)
 
 # On envoie
 s.send(msg.encode())
