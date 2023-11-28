@@ -34,6 +34,11 @@ while True:
 
         # On reçoit l'expression arithmétique du client
         expression = recv_expression(conn)
+
+        # Affiche la taille du message
+        print(f"Taille du message : {len(expression)} octets")
+
+        # Affiche l'expression
         print(f"Expression reçue : {expression}")
 
         # Evaluation et envoi du résultat
