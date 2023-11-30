@@ -22,9 +22,9 @@ n1, op, n2 = nums[0], nums[1], nums[2]
 
 n1_len, op_len, n2_len = len(n1), len(op), len(n2)
 
-hdr = n1_len.to_bytes(4, byteorder='big') + n2_len.to_bytes(4, byteorder='big') + op_len.to_bytes(4, byteorder='big')
+header = n1_len.to_bytes(4, byteorder='big') + n2_len.to_bytes(4, byteorder='big') + op_len.to_bytes(4, byteorder='big')
 
-seq = hdr + calc.replace(" ", "").encode()
+seq = header + calc.replace(" ", "").encode()
 print(seq)
 
 # On envoie
