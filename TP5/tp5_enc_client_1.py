@@ -1,5 +1,11 @@
 import socket
 
+def send_with_header(sock, message):
+    # Envoie un message avec un en-tête annonçant la taille du message
+    message_size = len(message)
+    header = str(message_size).encode()
+    sock.sendall(header + message.encode())
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('172.16.40.8', 13337))
 s.send('Hello'.encode())
@@ -17,8 +23,8 @@ try:
     y = int(y)
 
     if 0 <= x < 4294967295 and 0 <= y < 4294967295:
-        # Envoie de l'expression au serveur
-        s.send(expression.encode())
+        # Envoie de l'expression au serveur avec un en-tête de taille
+        send_with_header(s, expression)
 
         # Réception et affichage du résultat
         s_data = s.recv(1024)
