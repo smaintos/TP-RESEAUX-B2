@@ -11,7 +11,7 @@ if not (calc.count('+') == 1 and calc.count('-') <= 1 and calc.count('*') <= 1):
 
 nums = calc.split(" ")
 
-if not all(num.isdigit() for num in nums):
+if not all(num.lstrip('-').isdigit() for num in nums):
     raise TypeError("Veuillez saisir des nombres entiers.")
 
 if int(nums[0]) >= 4294967295 or int(nums[2]) >= 4294967295:
