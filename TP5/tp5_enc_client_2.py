@@ -38,11 +38,11 @@ elif op == "-":
 else:
     op = 2
 
-hdr = n1_len.to_bytes(4, byteorder='big') + n2_len.to_bytes(4, byteorder='big')
+header = n1_len.to_bytes(4, byteorder='big') + n2_len.to_bytes(4, byteorder='big')
 
 byte_calculation = n1.to_bytes(n1_len, byteorder='big') + op.to_bytes(1, byteorder='big') + n2.to_bytes(n2_len, byteorder='big')
 
-seq = hdr + byte_calculation
+seq = header + byte_calculation
 
 # On envoie
 s.send(seq)
