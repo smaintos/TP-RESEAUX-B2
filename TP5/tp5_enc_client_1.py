@@ -20,7 +20,7 @@ def is_valid_expression(expr):
     return True
 
 def main():
-    host = "172.16.40.8"
+    host = "172.16.40.8"  # Remplace avec l'adresse IP du serveur
     port = 13337
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -32,6 +32,10 @@ def main():
         if is_valid_expression(expression):
             # Envoyer l'expression au serveur
             client_socket.send(expression.encode())
+
+            # Recevoir la réponse du serveur
+            response = client_socket.recv(1024)
+            print(f"Réponse du serveur : {response.decode()}")
         else:
             print("Expression invalide. Veuillez entrer une expression arithmétique simple.")
 
