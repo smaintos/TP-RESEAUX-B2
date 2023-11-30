@@ -10,7 +10,6 @@ data = s.recv(1024)
 # Récupération d'une string utilisateur
 msg = input("Calcul à envoyer: ")
 
-
 # on encode le message explicitement en UTF-8 pour récup un tableau de bytes
 encoded_msg = msg.encode('utf-8')
 
@@ -28,6 +27,6 @@ payload = header + encoded_msg
 s.send(payload)
 
 # Réception et affichage du résultat
-s_data = s.recv(payload)
+s_data = s.recv(1024)
 print(s_data.decode())
 s.close()
