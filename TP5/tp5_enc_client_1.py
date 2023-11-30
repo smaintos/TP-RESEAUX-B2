@@ -1,7 +1,7 @@
 import socket
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('172.16.40.8', 1337))
+s.connect(('172.16.40.8', 13337))
 s.send('Hello'.encode())
 
 # On reçoit la string Hello
