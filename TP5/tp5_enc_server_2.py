@@ -42,17 +42,17 @@ while True:
         # Évaluation et envoi du résultat
         result: int = eval(calc)
         
-        res_byte_len = ceil(result.bit_length()/8.0)
+        byte_len = ceil(result.bit_length()/8.0)
         
-        hdr = res_byte_len.to_bytes(4, byteorder='big')
+        header = byte_len.to_bytes(4, byteorder='big')
         
         if result < 0:
-            hdr += int.to_bytes(1, 1, byteorder='big')
+            header += int.to_bytes(1, 1, byteorder='big')
             result = abs(result)
         else:
-            hdr += int.to_bytes(0, 1, byteorder='big')
+            header += int.to_bytes(0, 1, byteorder='big')
         
-        seq = hdr + result.to_bytes(res_byte_len, byteorder='big')
+        seq = header + result.to_bytes(byte_len, byteorder='big')
         
         conn.send(seq)
          

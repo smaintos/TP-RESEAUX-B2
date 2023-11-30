@@ -48,11 +48,11 @@ seq = header + byte_calculation
 s.send(seq)
 
 # Réception et affichage du résultat
-res_byte_len = int.from_bytes(s.recv(4), byteorder='big')
+byte_len = int.from_bytes(s.recv(4), byteorder='big')
 
 is_negative = True if int.from_bytes(s.recv(1), byteorder='big') == 1 else False
 
-res = int.from_bytes(s.recv(res_byte_len), byteorder='big')
+res = int.from_bytes(s.recv(byte_len), byteorder='big')
 if is_negative:
     res = -abs(res)
 
