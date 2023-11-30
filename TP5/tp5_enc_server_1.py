@@ -26,19 +26,15 @@ while True:
         if not data:
             break
 
-        if data == "Hello":
-            # Si le message est "Hello", on répond avec "Hello"
-            conn.send("Hello".encode())
-        else:
-            print(f"Calcul reçu du client : {data}")
+        print(f"Calcul reçu du client : {data}")
 
-            # Evaluation et envoi du résultat
-            try:
-                res = eval(data)
-                send_with_header(conn, str(res))
-            except Exception as e:
-                print(f"Erreur lors de l'évaluation du calcul : {e}")
-                send_with_header(conn, "Erreur")
+        # Evaluation et envoi du résultat
+        try:
+            res = eval(data)
+            send_with_header(conn, str(res))
+        except Exception as e:
+            print(f"Erreur lors de l'évaluation du calcul : {e}")
+            send_with_header(conn, "Erreur")
 
     except socket.error:
         print("Error Occurred.")

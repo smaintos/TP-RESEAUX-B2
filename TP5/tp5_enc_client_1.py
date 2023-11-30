@@ -8,11 +8,6 @@ def send_with_header(sock, message):
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect(('172.16.40.8', 13337))
-s.send('Hello'.encode())
-
-# On reçoit la string Hello
-data = s.recv(1024)
-print(data.decode())
 
 # Récupération d'une expression arithmétique de l'utilisateur
 expression = input("Entrez une expression arithmétique simple (ex. 3 + 3): ")
