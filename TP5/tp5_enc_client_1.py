@@ -17,8 +17,18 @@ try:
     y = int(y)
 
     if 0 <= x < 4294967295 and 0 <= y < 4294967295:
-        # Envoie de l'expression au serveur
-        s.send(expression.encode())
+        # Création du message avec un en-tête annonçant la taille du message
+        message = expression.encode()
+        header = str(len(message)).encode()
+
+        # Envoie de l'en-tête
+        s.send(header)
+
+        # Envoie du message
+        s.send(message)
+
+        # Envoie de la séquence de fin
+        s.send('<clafin>'.encode())
 
         # Réception et affichage du résultat
         s_data = s.recv(1024)
