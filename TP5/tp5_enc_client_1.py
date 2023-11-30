@@ -19,6 +19,12 @@ def is_valid_expression(expr):
 
     return True
 
+def send_with_header(sock, message):
+    # Envoie un message avec un en-tête annonçant la taille du message
+    message_size = len(message)
+    header = str(message_size).encode()
+    sock.sendall(header + message.encode())
+
 def main():
     host = "172.16.40.8"  # Remplace avec l'adresse IP du serveur
     port = 13337
@@ -30,8 +36,8 @@ def main():
         expression = input("Entrez une expression arithmétique simple (ex. 3 + 3): ")
 
         if is_valid_expression(expression):
-            # Envoyer l'expression au serveur
-            client_socket.send(expression.encode())
+            # Envoyer l'expression au serveur avec un en-tête de taille
+            send_with_header(client_socket, expression)
 
             # Recevoir et imprimer la réponse du serveur
             response = client_socket.recv(1024)
