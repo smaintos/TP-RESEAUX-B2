@@ -12,6 +12,7 @@ s.send('Hello'.encode())
 
 # On reçoit la string Hello
 data = s.recv(1024)
+print(data.decode())
 
 # Récupération d'une expression arithmétique de l'utilisateur
 expression = input("Entrez une expression arithmétique simple (ex. 3 + 3): ")
