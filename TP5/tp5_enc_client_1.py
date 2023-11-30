@@ -23,9 +23,8 @@ def send_with_header(sock, message):
     # Envoie un message avec un en-tête annonçant la taille du message
     message_size = len(message)
     header = str(message_size).encode()
-    sock.sendall(header + message.encode())
-    # Envoie la séquence de fin
-    sock.sendall('<clafin>'.encode())
+    sock.sendall(header + message.encode() + '<clafin>'.encode())
+
 
 def main():
     host = "172.16.40.8"  # Remplace avec l'adresse IP du serveur
