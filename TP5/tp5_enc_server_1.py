@@ -6,12 +6,6 @@ def receive_with_header(sock):
     message_size = int(header.decode())
     message = sock.recv(message_size).decode()
 
-    # Attente de la séquence de fin
-    end_sequence = sock.recv(1024).decode()
-    if end_sequence != '<clafin>':
-        print("Séquence de fin incorrecte.")
-        return None
-
     return message
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
