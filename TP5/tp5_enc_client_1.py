@@ -24,7 +24,7 @@ payload = header + encoded_msg
 
 
 # On envoie
-s.send(payload)
+s.send(msg.encode())
 
 # Réception et affichage du résultat
 s_data = s.recv(1024)
