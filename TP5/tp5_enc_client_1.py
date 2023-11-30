@@ -57,7 +57,7 @@ def sendresult(socket):
 
 def main():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('172.16.40.8', 13337))
+    s.connect(('10.2.2.3', 13337))
 
     # Récupération d'une string utilisateur
     calculation = input("Calcul à envoyer: ")

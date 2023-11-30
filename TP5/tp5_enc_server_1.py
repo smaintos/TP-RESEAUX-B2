@@ -42,7 +42,7 @@ def hitresult(socket, result):
 
 def main():
     port = 13337
-    ip_addr = '172.16.40.8'
+    ip_addr = '10.2.2.3'
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((ip_addr, port))
