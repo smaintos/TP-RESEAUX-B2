@@ -11,7 +11,7 @@ def send_with_header(sock, message):
     # Envoie un message avec un en-tête annonçant la taille du message
     message_size = len(message)
     header = str(message_size).encode()
-    sock.sendall(header + message.encode() + '<clafin>'.encode())
+    sock.sendall(header + message.encode())
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -21,10 +21,16 @@ conn, addr = s.accept()
 
 while True:
     try:
-        # On reçoit le calcul du client avec un en-tête de taille
+        # On reçoit le message du client avec un en-tête de taille
         data = receive_with_header(conn)
         if not data:
             break
+
+        # Si le message est "Hello", on répond avec "Hello" et on passe à l'étape suivante
+        if data == "Hello":
+            conn.send("Hello".encode())
+            continue
+
         print(f"Calcul reçu du client : {data}")
 
         # Evaluation et envoi du résultat
