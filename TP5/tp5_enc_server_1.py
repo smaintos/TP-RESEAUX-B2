@@ -5,6 +5,11 @@ def receive_with_header(sock):
     header = sock.recv(1024)
     message_size = int(header.decode())
     message = sock.recv(message_size).decode()
+    # Reçoit la séquence de fin
+    end_sequence = sock.recv(1024).decode()
+    if end_sequence != '<clafin>':
+        print("Séquence de fin incorrecte.")
+        return None
     return message
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -17,13 +22,13 @@ while True:
     try:
         # On reçoit le calcul du client avec un en-tête de taille
         data = receive_with_header(conn)
-        if not data:
+        if data is None:
             break
         print(f"Calcul reçu du client : {data}")
 
         # Evaluation et envoi du résultat
         res = eval(data)
-        conn.send(str(res).encode())
+        conn.sendall(str(res).encode())
     except socket.error:
         print("Error Occurred.")
         break
