@@ -1,7 +1,7 @@
 import socket
 from math import ceil
 
-def receive_calculation(socket):
+def hitcalc(socket):
     # On reçoit le calcul du client
     first_nb_len = int.from_bytes(socket.recv(4), byteorder='big')
 
@@ -24,7 +24,7 @@ def receive_calculation(socket):
     calculation = f"{first_nb} {operand} {second_nb}"
     return calculation
 
-def send_result(socket, result):
+def hitresult(socket, result):
     # Envoie du résultat au client
     res_byte_len = ceil(result.bit_length() / 8.0)
 
@@ -56,7 +56,7 @@ def main():
         print(f"Client {addr[0]} is connected")
 
         try:
-            calculation = receive_calculation(conn)
+            calculation = hitcalc(conn)
 
             if calculation is None:
                 continue
@@ -65,7 +65,7 @@ def main():
 
             # Evaluation et envoi du résultat
             result = eval(calculation)
-            send_result(conn, result)
+            hitresult(conn, result)
 
         except socket.error:
             print("Error Occurred.")

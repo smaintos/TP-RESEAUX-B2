@@ -2,11 +2,11 @@ import socket
 from re import compile
 from math import ceil
 
-def send_calculation(socket, calculation):
+def sendcalc(socket, calculation):
     # Validation de la saisie utilisateur
-    is_calculation_valid_pattern = compile('^(\+)?([0-9]){1,10} (\+|-|\*) (\+)?([0-9]){1,10}$')
+    calcpattern = compile('^(\+)?([0-9]){1,10} (\+|-|\*) (\+)?([0-9]){1,10}$')
 
-    if not is_calculation_valid_pattern.match(calculation):
+    if not calcpattern.match(calculation):
         raise TypeError("Veuillez saisir un calcul valide (addition, soustraction ou multiplication) : choisir des nombres entiers compris entre 0 et 4294967294")
 
     array = calculation.split(" ")
@@ -42,7 +42,7 @@ def send_calculation(socket, calculation):
     # On envoie
     socket.send(sequence)
 
-def receive_result(socket):
+def sendresult(socket):
     # Réception et affichage du résultat
     res_byte_len = int.from_bytes(socket.recv(4), byteorder='big')
 
@@ -62,9 +62,9 @@ def main():
     # Récupération d'une string utilisateur
     calculation = input("Calcul à envoyer: ")
 
-    send_calculation(s, calculation)
+    sendcalc(s, calculation)
 
-    result = receive_result(s)
+    result = sendresult(s)
 
     print(f"Le résultat du calcul {calculation} est : {result}")
 
