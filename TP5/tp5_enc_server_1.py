@@ -8,21 +8,17 @@ conn, addr = s.accept()
 
 while True:
     try:
-        # On reçoit la string Hello du client
+        # On reçoit le calcul du client
         data = conn.recv(1024)
         if not data:
             break
-        print(f"Données reçues du client : {data}")
-
-        # On reçoit le calcul du client
-        data = conn.recv(1024)
+        print(f"Calcul reçu du client : {data.decode()}")
 
         # Evaluation et envoi du résultat
-        if data:
-            res = eval(data.decode())
-            conn.send(str(res).encode())
+        res = eval(data.decode())
+        conn.send(str(res).encode())
     except socket.error:
-        print("Error Occured.")
+        print("Error Occurred.")
         break
 
 conn.close()

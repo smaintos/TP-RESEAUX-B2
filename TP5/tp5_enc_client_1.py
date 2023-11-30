@@ -33,7 +33,7 @@ def main():
             # Envoyer l'expression au serveur
             client_socket.send(expression.encode())
 
-            # Recevoir la réponse du serveur
+            # Recevoir et imprimer la réponse du serveur
             response = client_socket.recv(1024)
             print(f"Réponse du serveur : {response.decode()}")
         else:
