@@ -10,6 +10,14 @@ data = s.recv(1024)
 # Récupération d'une string utilisateur
 msg = input("Calcul à envoyer: ")
 
+if msg == '4294967295':
+    print("tu à dépassé la limite de taille de message, le serveur ne peut pas traiter ton message")
+    exit()
+
+if len(msg) > 3:
+    print("Tu peux calculer que deux nombres à la fois.")
+    exit()
+
 # on encode le message explicitement en UTF-8 pour récup un tableau de bytes
 encoded_msg = msg.encode('utf-8')
 
