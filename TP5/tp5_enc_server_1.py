@@ -1,77 +1,37 @@
 import socket
-from math import ceil
 
-def hitcalc(socket):
-    # On reçoit le calcul du client
-    first_nb_len = int.from_bytes(socket.recv(4), byteorder='big')
+port = 13337
+ip_addr = '10.2.2.3'
 
-    if not first_nb_len:
-        return None
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((ip_addr, port))
 
-    second_nb_len = int.from_bytes(socket.recv(4), byteorder='big')
+print(f"Serveur démarré sur le port {port}")
 
-    first_nb = int.from_bytes(socket.recv(first_nb_len), byteorder='big')
-    operand = int.from_bytes(socket.recv(1), byteorder='big')
-    second_nb = int.from_bytes(socket.recv(second_nb_len), byteorder='big')
+s.listen(1)
 
-    if operand == 0:
-        operand = "+"
-    elif operand == 1:
-        operand = "-"
-    else:
-        operand = "*"
+while True:
+    
+    conn, addr = s.accept()
+    
+    print(f"Client {addr[0]} connecté")
 
-    calculation = f"{first_nb} {operand} {second_nb}"
-    return calculation
+    try:
+        # On reçoit le calcul du client
+        n1_len = int.from_bytes(conn.recv(4), byteorder='big')
+        if not n1_len:
+            continue
+        n2_len = int.from_bytes(conn.recv(4), byteorder='big')
+        op_len = int.from_bytes(conn.recv(4), byteorder='big')
 
-def hitresult(socket, result):
-    # Envoie du résultat au client
-    res_byte_len = ceil(result.bit_length() / 8.0)
+        calc = f"{conn.recv(n1_len).decode()} {conn.recv(op_len).decode()} {conn.recv(n2_len).decode()}"
+        
+        # Évaluation et envoi du résultat
+        result = eval(calc)
+        conn.send(str(result).encode())
+         
+    except socket.error:
+        print("Une erreur s'est produite.")
+        break
 
-    header = res_byte_len.to_bytes(4, byteorder='big')
-
-    if result < 0:
-        header += int.to_bytes(1, 1, byteorder='big')
-        result = abs(result)
-    else:
-        header += int.to_bytes(0, 1, byteorder='big')
-
-    sequence = header + result.to_bytes(res_byte_len, byteorder='big')
-
-    socket.send(sequence)
-
-def main():
-    port = 13337
-    ip_addr = '10.2.2.3'
-
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((ip_addr, port))
-
-    print(f"Server started at port {port}")
-
-    s.listen(1)
-
-    while True:
-        conn, addr = s.accept()
-        print(f"Client {addr[0]} is connected")
-
-        try:
-            calculation = hitcalc(conn)
-
-            if calculation is None:
-                continue
-
-            print(f"Calculation received from client: {calculation}")
-
-            # Evaluation et envoi du résultat
-            result = eval(calculation)
-            hitresult(conn, result)
-
-        except socket.error:
-            print("Error Occurred.")
-            break
-
-    conn.close()
-
-if __name__ == "__main__":
-    main()
+conn.close()

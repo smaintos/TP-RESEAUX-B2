@@ -1,75 +1,37 @@
 import socket
 from re import compile
-from math import ceil
 
-def sendcalc(socket, calculation):
-    # Validation de la saisie utilisateur
-    calcpattern = compile('^(\+)?([0-9]){1,10} (\+|-|\*) (\+)?([0-9]){1,10}$')
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect(('10.2.2.3', 13337))
 
-    if not calcpattern.match(calculation):
-        raise TypeError("Veuillez saisir un calcul valide (addition, soustraction ou multiplication) : choisir des nombres entiers compris entre 0 et 4294967294")
+# Récupération d'une string utilisateur
+calc = input("Calcul à envoyer: ")
 
-    array = calculation.split(" ")
+calc_pattern = compile('^(\+|-)?([0-9]){1,10} (\+|-|\*) (\+|-)?([0-9]){1,10}$')
 
-    if int(array[0]) >= 4294967295 or int(array[2]) >= 4294967295:
-        print("Les nombres saisis doivent être compris entre 0 et 4294967294")
-        exit(0)
+if not calc_pattern.match(calc):
+    raise TypeError("Veuillez saisir un calcul valide (addition, soustraction ou multiplication) : choisir des nombres entiers compris inférieurs à 4294967295")
 
-    first_nb, operand, second_nb = int(array[0]), array[1], int(array[2])
+nums = calc.split(" ")
 
-    first_nb_len, second_nb_len = ceil(first_nb.bit_length() / 8.0), ceil(second_nb.bit_length() / 8.0)
-
-    if first_nb == 0:
-        first_nb_len = 1
-    if second_nb == 0:
-        second_nb_len = 1
-
-    operand = array[1]
-
-    if operand == "+":
-        operand = 0
-    elif operand == "-":
-        operand = 1
-    else:
-        operand = 2
-
-    header = first_nb_len.to_bytes(4, byteorder='big') + second_nb_len.to_bytes(4, byteorder='big')
-
-    byte_calculation = first_nb.to_bytes(first_nb_len, byteorder='big') + operand.to_bytes(1, byteorder='big') + second_nb.to_bytes(second_nb_len, byteorder='big')
-
-    sequence = header + byte_calculation
-
-    # On envoie
-    socket.send(sequence)
-
-def sendresult(socket):
-    # Réception et affichage du résultat
-    res_byte_len = int.from_bytes(socket.recv(4), byteorder='big')
-
-    is_negative = int.from_bytes(socket.recv(1), byteorder='big') == 1
-
-    res = int.from_bytes(socket.recv(res_byte_len), byteorder='big')
-
-    if is_negative:
-        res = -abs(res)
-
-    return res
-
-def main():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(('10.2.2.3', 13337))
-
-    # Récupération d'une string utilisateur
-    calculation = input("Calcul à envoyer: ")
-
-    sendcalc(s, calculation)
-
-    result = sendresult(s)
-
-    print(f"Le résultat du calcul {calculation} est : {result}")
-
-    s.close()
+if int(nums[0]) >= 4294967295 or int(nums[2]) >= 4294967295:
+    print("Les nombres saisis doivent être inférieurs à 4294967295")
     exit(0)
+    
+n1, op, n2 = nums[0], nums[1], nums[2]
 
-if __name__ == "__main__":
-    main()
+n1_len, op_len, n2_len = len(n1), len(op), len(n2)
+
+hdr = n1_len.to_bytes(4, byteorder='big') + n2_len.to_bytes(4, byteorder='big') + op_len.to_bytes(4, byteorder='big')
+
+seq = hdr + calc.replace(" ", "").encode()
+print(seq)
+
+# On envoie
+s.send(seq)
+
+# Réception et affichage du résultat
+s_data = s.recv(1024)
+print(s_data.decode())
+s.close()
+exit(0)
