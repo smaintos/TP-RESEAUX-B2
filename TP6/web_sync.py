@@ -15,10 +15,10 @@ def write_content(content, file):
         with open(file, 'w', encoding='utf-8') as file:
             file.write(content)
 
-        print(f"Contenu écrit avec succès dans {file}")
+        print(f"Good :  {file}")
 
     except IOError as e:
-        print(f"Erreur lors de l'écriture dans le fichier : {e}")
+        print(f"Un peu moins good : {e}")
         sys.exit(1)
 
 def main():
@@ -30,11 +30,12 @@ def main():
     url = sys.argv[1]
     content = get_content(url)
 
-    os.makedirs("/tmp/web_page", exist_ok=True)
+    os.makedirs("./tmp/web_page", exist_ok=True)
 
-    file = os.path.join("/tmp/web_page", "downloaded_page.html")
+    file = os.path.join("./tmp/web_page", "downloaded_page.html")
 
     write_content(content, file)
 
 if __name__ == "__main__":
     main()
+
