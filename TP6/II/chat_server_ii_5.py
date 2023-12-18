@@ -2,6 +2,28 @@ import asyncio
 
 CLIENTS = {}
 
+
+async def handle_exit_command(addr):
+    sender_pseudo = CLIENTS[addr]["pseudo"]
+    exit_message = f"Annonce : {sender_pseudo} a quitté la chatroom."
+
+    for client_addr, client_info in CLIENTS.items():
+        if client_addr != addr:
+            client_info["w"].write(exit_message.encode())
+            await client_info["w"].drain()
+
+    print(f"Annonce redistribuée à tous les clients : {exit_message}")
+
+    # Informer le client qu'il peut fermer la connexion
+    CLIENTS[addr]["w"].write("/exit".encode())
+    await CLIENTS[addr]["w"].drain()
+
+    # Fermer la connexion du client
+    CLIENTS[addr]["w"].close()
+    
+
+
+
 async def handle_client(reader, writer):
     addr = writer.get_extra_info('peername')
 
@@ -22,8 +44,10 @@ async def handle_client(reader, writer):
         # Stocker les informations du client dans le dictionnaire
         CLIENTS[addr] = {"r": reader, "w": writer, "pseudo": pseudo}
 
+        
+
         # Annoncer l'arrivée du nouveau client à tous les clients
-        announce_message = f"Annonce : {pseudo} a rejoint la chatroom"
+        announce_message = f"Annonce : {pseudo} a rejoint la chatroom 🫶🏽"
         for client_addr, client_info in CLIENTS.items():
             if client_addr != addr:
                 client_info["w"].write(announce_message.encode())
@@ -39,14 +63,21 @@ async def handle_client(reader, writer):
 
             sender_info = CLIENTS[addr]["pseudo"]
             message = data.decode()
-            formatted_message = f"{sender_info}: {message}"
 
-            for client_addr, client_info in CLIENTS.items():
-                if client_addr != addr:
-                    client_info["w"].write(formatted_message.encode())
-                    await client_info["w"].drain()
+            # Vérifier si le message est une commande
+            if message.startswith("/"):
+                if message.strip() == "/exit":
+                    await handle_exit_command(addr)
+                    return  # Terminer la gestion du client après la commande /exit
+            else:
+                formatted_message = f"{sender_info}: {message}"
 
-            print(f"Message redistribué à tous les clients : {formatted_message}")
+                for client_addr, client_info in CLIENTS.items():
+                    if client_addr != addr:
+                        client_info["w"].write(formatted_message.encode())
+                        await client_info["w"].drain()
+
+                print(f"Message redistribué à tous les clients : {formatted_message}")
 
     except asyncio.CancelledError:
         pass
@@ -58,7 +89,7 @@ async def handle_client(reader, writer):
 
 async def main():
     server = await asyncio.start_server(
-        handle_client, '10.33.76.197', 8888
+        handle_client, '192.168.1.10', 8888
     )
 
     addr = server.sockets[0].getsockname()
